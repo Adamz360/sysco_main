@@ -1,0 +1,463 @@
+{% extends "admin_dashboard/dashboard_base.html" %}
+{% load static %}
+
+{% block content %}
+    <!-- Page Wrapper -->
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-primary text-uppercase mb-1">
+                                                Total Revenue Today</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ total_revenue_day|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-money-check fa-2x text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                                Total Week Revenue</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ total_revenue_week|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-money-check fa-2x text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                         <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-info text-uppercase mb-1">
+                                               Total Month Revenue</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ total_revenue_month|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-money-check fa-2x text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-info text-uppercase mb-1">
+                                                Total Year Revenue</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ total_revenue_year|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-money-check fa-2x text-gray-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                Section To Display total profit -->
+
+                <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-primary text-uppercase mb-1">
+                                                Total Profit Today</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ profit_day_total|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chart-line fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                                Total Week Profit</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ profit_week_total|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chart-line fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                         <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-info text-uppercase mb-1">
+                                               Total Month Profit</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ profit_month_total|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chart-line fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-info text-uppercase mb-1">
+                                                Total Year Profit</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                N{{ profit_year_total|default:0.0 }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-chart-line fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+
+<!--                        Sections to display overview -->
+
+                    <div class="container d-flex">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success  shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                                Total Products</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-900">
+                                                {{ totals.total_products }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-shopping-bag  fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                                Total Categories</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-900">
+                                                {{ totals.total_categories }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-list-alt  fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                         <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                               Total Store</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-900">
+                                                {{ totals.total_stores }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-store-alt fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xl font-weight-bold text-success text-uppercase mb-1">
+                                                Total Employee </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-900">
+                                                {{ totals.total_employees }}
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+<!--                        Chart area -->
+                    <div class="container my-5">
+                        <h2 class="text-center mb-4" style="color: black;">Revenue and Profit Charts</h2>
+                        <div class="row">
+                            <!-- Daily Revenue and Profit Chart -->
+                            <div class="col-md-6">
+                                <h4 class="text-center mb-3">Daily Revenue and Profit</h4>
+                                <canvas id="dailyRevenueProfitChart" width="400" height="200"></canvas>
+                            </div>
+                            <!-- Monthly Revenue and Profit Chart -->
+                            <div class="col-md-6">
+                                <h4 class="text-center mb-3">Monthly Revenue and Profit</h4>
+                                <canvas id="revenueProfitChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                    <!-- Content Row -->
+
+                    </div>
+                        <h1 class="text-center text-gray-900 mb-4">Top Selling Products</h1>
+                        <h2 class="text-info text-center">By Quantity Sold</h2>
+                    <div class="row">
+                        <div class="col-xl-4">
+                            <h3>Today</h3>
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Quantity Sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in top_sale_today %}
+                                        <tr>
+                                            <td>{{ product.product__name }}</td>
+                                            <td>{{ product.total_quantity }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="2" class="text-center text-muted">No data available</td>
+
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xl-4">
+                            <h3>This Week</h3>
+                            <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_sale_week %}
+                    <tr>
+                        <td>{{ product.product__name }}</td>
+                        <td>{{ product.total_quantity }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data available</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                    </table>
+                        </div>
+                        <div class="col-xl-4">
+                            <h3>This Month</h3>
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Quantity Sold</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    {% for product in top_sale_month %}
+                        <tr>
+                            <td>{{ product.product__name }}</td>
+                            <td>{{ product.total_quantity }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">No data available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                            <h2 class="text-info text-center">By Revenue</h2>
+
+                    <div class="row">
+                    <div class="col-xl-4">
+                         <h3>Today</h3>
+                        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_sale_revenue_today %}
+                    <tr>
+                        <td>{{ product.product__name }}</td>
+                        <td>N{{ product.total_revenue }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+                    </div>
+                    <div class="col-xl-4">
+                        <h3>This Week</h3>
+                        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_sale_revenue_week %}
+                    <tr>
+                        <td>{{ product.product__name }}</td>
+                        <td>N{{ product.total_revenue }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+                    </div>
+                    <div class="col-xl-4">
+                        <h3>This Month</h3>
+                        <table class="table table-bordered table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in top_sale_revenue_month %}
+                    <tr>
+                        <td>{{ product.product__name }}</td>
+                        <td>N{{ product.total_revenue }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">No data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- End of Main Content -->
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+        <script>
+            const chartData = {{ monthly_data|safe }};
+            const chartData_day = {{ daily_data|safe }};
+
+        </script>
+
+       <script src="{% static 'js/dashboardChart.js' %}"></script>
+
+{% endblock %}
+

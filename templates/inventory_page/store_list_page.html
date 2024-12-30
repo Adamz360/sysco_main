@@ -1,0 +1,40 @@
+{% extends "admin_dashboard/dashboard_base.html" %}
+
+{% block content %}
+
+<!-- Container for the table -->
+<div class="container">
+        <h2 class="my-4 text-center">Store List</h2>
+    <!-- Table with Bootstrap styling -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4 class="card-title">Stores</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for store in stores %}
+                    <tr>
+                        <td>{{ store.name }}</td>
+                        <td>
+                            {% if user.is_staff %}
+                                <a href="{% url 'delete_store' store.id %}" class="text-danger"
+                                   onclick="return confirm('Are you sure you want to delete this Store?');">
+                                    Delete
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

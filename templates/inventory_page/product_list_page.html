@@ -1,0 +1,96 @@
+{% extends "admin_dashboard/dashboard_base.html" %}
+
+{% block content %}
+
+<!-- Container for the table -->
+<div class="container">
+    <h2 class="my-4 text-center">Product List</h2>
+    <!-- Card container for the table -->
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4 class="card-title">Products</h4>
+        </div>
+        <div class="card-body">
+            <!-- Table with Bootstrap classes -->
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>#</th> <!-- Serial Number Column -->
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Low Stock Threshold</th>
+                        <th>Actions</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td> <!-- Serial Number -->
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.price }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.low_stock_threshold }}</td>
+                        <td>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-sm">View</a>
+                            {% if user.is_staff %}
+                                <a href="{% url 'update_product' product.id %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'delete_product' product.id %}" class="btn btn-danger btn-sm  my-2"
+                                   onclick="return confirm('Are you sure you want to delete this product?');">
+                                   Delete
+                                </a>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.created_at }}</td>
+                        <td>{{ product.updated_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!--    pagination section-->
+    <div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination">
+            {% if products_paginated.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products_paginated.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo;</span>
+            </li>
+            {% endif %}
+
+            {% for page_num in products_paginated.paginator.page_range %}
+            <li class="page-item {% if page_num == products_paginated.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if products_paginated.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products_paginated.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+</div>
+
+
+{% endblock %}
