@@ -1,40 +1,37 @@
 {% extends "admin_dashboard/dashboard_base.html" %}
 {% load custom_filters %}
 
-
 {% block content %}
 <!-- templates/expenses/add_expense.html -->
-<div class="container my-5">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3>Add New Expense</h3>
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white text-center rounded-top">
+                    <h4 class="mb-0">Add New Expense</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_category" class="form-label">Expense Category</label>
-                            {{ form.category|add_class:"form-control" }}
+                        <div class="form-floating mb-4">
+                            <input type="text" id="id_category" name="category" class="form-control" placeholder="Category" required>
+                            <label for="id_category">Expense Category</label>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_amount" class="form-label">Amount</label>
-                            {{ form.amount|add_class:"form-control" }}
+                        <div class="form-floating mb-4">
+                            <input type="number" id="id_amount" name="amount" step="0.01" class="form-control" placeholder="Amount" required>
+                            <label for="id_amount">Amount</label>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_date" class="form-label">Date</label>
-                            {{ form.date|add_class:"form-control" }}
+                        <div class="form-floating mb-4">
+                            <input type="date" id="id_date" name="date" class="form-control" required>
+                            <label for="id_date">Date</label>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_description" class="form-label">Description</label>
-                            {{ form.description|add_class:"form-control" }}
+                        <div class="form-floating mb-4">
+                            <textarea id="id_description" name="description" class="form-control" placeholder="Description" style="height: 100px;"></textarea>
+                            <label for="id_description">Description</label>
                         </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-block">
-                                <i class="bi bi-plus-circle"></i> Add Expense
-                            </button>
-                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-plus-circle"></i> Add Expense
+                        </button>
                     </form>
                 </div>
             </div>

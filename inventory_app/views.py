@@ -158,7 +158,7 @@ def transaction_create(request, product_id):
                 transaction.save()
                 product.quantity += transaction.quantity if transaction.transaction_type == 'ADD' else -transaction.quantity
                 product.save()
-                notify_low_stock(request, product)
+                # notify_low_stock(request, product)
 
             messages.success(request, "Transaction processed successfully.")
             return redirect('product_detail', product_id=product.id)
@@ -237,25 +237,97 @@ def delete_store(request, store_id):
 
 
 @login_required
+@admin_required
 def store_list(request):
     product_store = Store.objects.all()
     return render(request, 'inventory_page/store_list_page.html', {'stores': product_store})
 
+@login_required
+@admin_required
+# def expense_list(request):
+#     expenses = Expense.objects.all().order_by('-timestamp')
+#     total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0.0
+#     return render(request, 'inventory_page/expense_list.html', {'expenses': expenses, 'total_expenses': total_expenses})
+
 
 def expense_list(request):
+    form = ExpenseForm(request.GET or None)
     expenses = Expense.objects.all().order_by('-timestamp')
+
+    # Filter expenses by date if the form is valid
+    if form.is_valid():
+        if form.cleaned_data.get('start_date'):
+            expenses = expenses.filter(timestamp__gte=form.cleaned_data['start_date'])
+        if form.cleaned_data.get('end_date'):
+            expenses = expenses.filter(timestamp__lte=form.cleaned_data['end_date'])
+
+     # Add pagination
+    paginator = Paginator(expenses, 10)  # Show 10 expenses per page
+    page_number = request.GET.get('page')
+    paginated_expenses = paginator.get_page(page_number)
+
+    # Calculate the total expenses
     total_expenses = expenses.aggregate(total=Sum('amount'))['total'] or 0.0
-    return render(request, 'inventory_page/expense_list.html', {'expenses': expenses, 'total_expenses': total_expenses})
+
+    return render(
+        request, 
+        'inventory_page/expense_list.html', 
+        {
+            'form': form,
+            'expenses': paginated_expenses, 
+            'total_expenses': total_expenses
+        }
+    )
 
 
+# def transaction_history(request):
+#     form = TransactionFilterForm(request.GET or None)
+#     transactions = Transaction.objects.all().order_by('-timestamp')
+
+#     for field_name in form.fields:
+#         field = form.fields[field_name]
+#         if isinstance(field.widget, (TextInput, Select)):
+#             field.widget.attrs['class'] = 'form-control'
+
+#     if form.is_valid():
+#         transactions = form.filter_transactions()
+
+#     paginator = Paginator(transactions, 20)  
+#     page_number = request.GET.get('page')
+#     paginated_transactions = paginator.get_page(page_number)
+
+#     return render(request, 'inventory_page/transaction_history.html', {
+#         'form': form,
+#         'transactions': paginated_transactions
+#     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+@admin_required
 def add_expense(request):
     if request.method == 'POST':
         form = ExpenseForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('expense_list')
+            form.save()  # Saves the form to the database
+            messages.success(request, "Expense added successfully.")
+            return redirect('expense_list')  # Adjust the redirect to your needs
+        else:
+            messages.error(request, "There was an error with your form submission.")
     else:
         form = ExpenseForm()
+
     return render(request, 'inventory_page/add_expense.html', {'form': form})
 
 
@@ -296,6 +368,7 @@ def add_email(request):
     else:
         form = EmailForm()
     return render(request, 'inventory_page/add_email.html', {'form': form})
+
 
 @login_required
 @admin_required
@@ -402,6 +475,9 @@ def products_by_category(request, category_id):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+
+
+########################################################################################################################
 @csrf_protect
 @login_required
 def invoice_print(request):
@@ -413,9 +489,9 @@ def invoice_print(request):
         try:
             items = json.loads(items_json)
         except json.JSONDecodeError:
-            return HttpResponseBadRequest("Invalid JSON data")
+            return HttpResponseBadRequest("Invalid JSON data.")
 
-        invoice_data = {}
+        insufficient_products = []
 
         for item in items:
             product_id = item.get('id')
@@ -423,12 +499,30 @@ def invoice_print(request):
             try:
                 product = Product.objects.get(id=product_id)
                 if product.quantity < quantity:
-                    return HttpResponseBadRequest(
-                        f"Insufficient stock for {product.name}. Available: {product.quantity}")
+                    insufficient_products.append({
+                        'name': product.name,
+                        'available_quantity': product.quantity,
+                        'requested_quantity': quantity
+                    })
             except Product.DoesNotExist:
                 return HttpResponseBadRequest(f"Product with ID {product_id} does not exist.")
 
-            # # First transaction creation
+        if insufficient_products:
+            # Render a page showing insufficient products
+            return render(request, 'inventory_page/insufficient_stock.html', {
+                'insufficient_products': insufficient_products,
+                'back_url': 'sales_page'  # Update with your actual sales page URL name
+            })
+
+        # Process the transaction if all products have sufficient stock
+        invoice_data = {}
+
+        for item in items:
+            product_id = item.get('id')
+            quantity = item.get('quantity', 0)
+            product = Product.objects.get(id=product_id)
+
+            # Create a transaction
             transaction = Transaction(
                 product=product,
                 employee=request.user,
@@ -437,23 +531,19 @@ def invoice_print(request):
             )
             transaction.save()
 
-
             # Update product stock
-            if product.quantity >= quantity:
-                product.quantity -= quantity
-                product.save()
-            else:
-                return HttpResponseBadRequest(f"Insufficient stock for {product.name}.")
+            product.quantity -= quantity
+            product.save()
 
             invoice_data[product_id] = quantity
 
-        # This function should now handle the transaction creation
+        # Handle the invoice creation
         create_order_items_from_invoice(invoice_data)
 
         # Calculate grand total
         grand_total = sum(item.get('quantity', 0) * item.get('price', 0) for item in items)
 
-        # Prepare context for invoice
+        # Prepare context for the invoice
         context = {
             'items': items,
             'grand_total': grand_total,
@@ -466,13 +556,14 @@ def invoice_print(request):
     else:
         return redirect('sales_page')
 
+
+
 def get_product_quantity(request, product_id):
     try:
         product = Product.objects.get(id=product_id)
         return JsonResponse({'available_quantity': product.quantity})
     except Product.DoesNotExist:
         return JsonResponse({'error': 'Product not found'}, status=404)
-
 
 
 
@@ -513,8 +604,6 @@ def delete_admin(request, admin_id):
 
 
 
-
-
 @login_required
 @admin_required
 def transaction_history(request):
@@ -540,43 +629,6 @@ def transaction_history(request):
 
 
 
-
-@login_required
-@admin_required
-def notify_low_stock(request, product):
-    if product.quantity <= product.low_stock_threshold:
-        messages.warning(request, f"Stock for {product.name} is low! Current quantity: {product.quantity}")
-
-        emails = ReceiverEmail.objects.values_list('email', flat=True)
-        subject = f"Low Stock Alert: {product.name}"
-        message = f"Stock for {product.name} is critically low (quantity: {product.quantity}). Please restock urgently."
-
-        send_low_stock_email.delay(subject, message, list(emails))
-
-# @login_required
-# @admin_required
-# def notify_low_stock(request, product):
-#
-#     # Check if stock is below or equal to the threshold
-#     if product.quantity <= product.low_stock_threshold:
-#         # Send notification via Django messages
-#         messages.warning(request, f"Warning: Stock for {product.name} is low! Current quantity: {product.quantity}")
-#
-#         # get email form the database
-#         # email = ReceiverEmail.objects.all().first()
-#         emails = ReceiverEmail.objects.values_list('email', flat=True)
-#
-#
-#         # Send email notification
-#         subject = f"Low Stock Alert: {product.name}"
-#         message = f"The stock for {product.name} is critically low.\nCurrent quantity: {product.quantity}.\nPlease restock urgently."
-#         sender_email = 'noreply@inventorysystem.com'  # Replace with your system's email
-#
-#         try:
-#             send_mail(subject, message, sender_email, list(emails))
-#             # send_mail(subject, message, sender_email, recipient_list)
-#         except Exception as e:
-#             print(f"Failed to send email: {e}")
 
 @login_required
 @admin_required

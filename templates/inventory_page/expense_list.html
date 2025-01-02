@@ -1,37 +1,80 @@
 {% extends "admin_dashboard/dashboard_base.html" %}
+
 {% block content %}
-
-<!-- templates/expenses/expense_list.html -->
 <div class="container my-5">
-    <h2 class="text-center mb-4 text-dark">Expense Tracker</h2>
-    <div class="row">
-        <div class="col-md-6">
-            <h4>Total Expenditure: NGN {{ total_expenses }}</h4>
-        </div>
-        <div class="col-md-6 text-end">
-            <a href="{% url 'add-expense' %}" class="btn btn-primary">Add Expense</a>
-        </div>
-    </div>
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Description</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-                <tr>
-                    <td>{{ expense.category }}</td>
-                    <td>{{ expense.amount }}</td>
-                    <td>{{ expense.description }}</td>
-                    <td>{{ expense.timestamp|date:"Y-m-d H:i" }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <h3 class="text-center mb-4">Expense List</h3>
+    <h5 class="text-end mt-4">Total Expenses: {{ total_expenses }}</h5>
 
+
+    <!-- Filter Form -->
+    <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <label for="start_date" class="form-label">Start Date</label>
+            {{ form.start_date }}
+        </div>
+        <div class="col-md-4">
+            <label for="end_date" class="form-label">End Date</label>
+            {{ form.end_date }}
+        </div>
+        <div class="col-md-4 align-self-end">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <!-- Expense Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.timestamp|date:"Y-m-d" }}</td>
+                        <td>{{ expense.description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if expenses.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ expenses.previous_page_number }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for num in expenses.paginator.page_range %}
+                <li class="page-item {% if expenses.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}">{{ num }}</a>
+                </li>
+            {% endfor %}
+
+            {% if expenses.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ expenses.next_page_number }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+</div>
 {% endblock %}

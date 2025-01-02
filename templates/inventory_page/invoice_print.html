@@ -17,7 +17,8 @@
             background-color: #f8f9fa;
         }
         .receipt-container {
-            max-width: 600px;
+            /* max-width: 600px; */
+            max-width: 100%;
             margin: 20px auto;
             background: white;
             padding: 20px;
@@ -84,16 +85,16 @@
                 </tr>
                 {% endfor %}
                 <tr>
-                    <td colspan="5" class="text-right font-weight-bold">Grand Total</td>
+                    <td colspan="4" class="text-right font-weight-bold">Grand Total</td>
                     <td class="font-weight-bold">N{{ grand_total|floatformat:2|intcomma }}</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="footer-info">
-            <p>Payment Method: {{ payment_method }}</p>
-            <p>Thank you for shopping with us!</p>
-            <p>This is your receipt. Keep it safe.</p>
+            <p class="font-weight-bold" >Payment Method: {{ payment_method }}</p>
+            <p class="font-weight-bold">Thank you for shopping with us!</p>
+            <p class="font-weight-bold">This is your receipt. Keep it safe.</p>
         </div>
     </div>
 

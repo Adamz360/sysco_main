@@ -70,9 +70,6 @@ def create_order_items_from_invoice(invoice_data):
             timestamp=now(),
         )
 
-        # Deduct from stock
-        product.quantity -= quantity
-        product.save()
 
 
 
@@ -254,40 +251,7 @@ def monthly_revenue_and_profit():
 
     return chart_data
 
-#
-# def daily_revenue_and_profit():
-#     today = datetime.now().date()
-#     start_of_week = today - timedelta(days=today.weekday())  # Start of the current week
-#     end_of_week = start_of_week + timedelta(days=6)  # End of the current week
-#
-#     data = (
-#         OrderItem.objects.filter(timestamp__date__range=[start_of_week, end_of_week])
-#         .annotate(
-#             day=F('timestamp__date'),
-#             profit=(F('product__price') - F('product__price_bought')) * F('quantity'),
-#             revenue=F('product__price') * F('quantity'),
-#         )
-#         .values('day')
-#         .annotate(
-#             total_revenue=Sum('revenue'),
-#             total_profit=Sum('profit'),
-#         )
-#         .order_by('day')
-#     )
-#
-#     # Format results for use in the chart
-#     chart_data = {
-#         "days": [],
-#         "revenues": [],
-#         "profits": [],
-#     }
-#
-#     for entry in data:
-#         chart_data["days"].append(entry['day'].strftime('%A'))  # Day names like Monday, Tuesday
-#         chart_data["revenues"].append(float(entry['total_revenue'] or 0.0))
-#         chart_data["profits"].append(float(entry['total_profit'] or 0.0))
-#
-#     return chart_data
+
 
 
 # utils.py

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Product, ProductCategory, Transaction, OrderItem, ReceiverEmail, LowStockNotification, CustomUser,
+from .models import (Product, ProductCategory, Transaction, OrderItem, LowStockNotification, CustomUser, Expense,
                      Store)
 from django.contrib.auth.admin import UserAdmin
 
@@ -7,8 +7,8 @@ from django.contrib.auth.admin import UserAdmin
 admin.site.register(Product)
 admin.site.register(ProductCategory)
 admin.site.register(Transaction)
-admin.site.register(ReceiverEmail)
 admin.site.register(Store)
+admin.site.register(Expense)
 
 # added on 24th 2:32am to add role to employee
 @admin.register(CustomUser)

@@ -53,11 +53,61 @@ class StoreForm(forms.ModelForm):
         fields = ['name', ]
 
 
-class ExpenseForm(forms.Form):
-    category = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    amount = forms.DecimalField(max_digits=10, decimal_places=2, widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+# class ExpenseForm(forms.ModelForm):
+#     class Meta:
+#         model = Expense
+#         fields = ['category', 'amount', 'description']  # Include the desired fields
+#         widgets = {
+#             'category': forms.TextInput(attrs={'class': 'form-control'}),
+#             'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+#             'description': forms.Textarea(attrs={'class': 'form-control'}),
+#         }
+
+#     def filter_expenses(self):
+#         queryset = Expense.objects.all()
+
+#         if self.cleaned_data.get('start_date'):
+#             queryset = queryset.filter(timestamp__gte=self.cleaned_data['start_date'])
+
+#         if self.cleaned_data.get('end_date'):
+#             queryset = queryset.filter(timestamp__lte=self.cleaned_data['end_date'])
+
+#         return queryset
+
+
+class ExpenseForm(forms.ModelForm):
+    start_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        label="Start Date"
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        label="End Date"
+    )
+
+    class Meta:
+        model = Expense
+        fields = ['category', 'amount', 'description']  # Include the desired fields
+        widgets = {
+            'category': forms.TextInput(attrs={'class': 'form-control'}),
+            'amount': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+    def filter_expenses(self):
+        queryset = Expense.objects.all()
+
+        if self.cleaned_data.get('start_date'):
+            queryset = queryset.filter(timestamp__gte=self.cleaned_data['start_date'])
+
+        if self.cleaned_data.get('end_date'):
+            queryset = queryset.filter(timestamp__lte=self.cleaned_data['end_date'])
+
+        return queryset
+
 
 
 
